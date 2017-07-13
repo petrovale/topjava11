@@ -24,19 +24,25 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,13,0), "Обед", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,20,0), "Ужин", 510)
         );
-        getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
+        List<UserMealWithExceed> listOfMealWithExceed = getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12,0), 2000);
+        listOfMealWithExceed.forEach(System.out::println);
 //        .toLocalDate();
 //        .toLocalTime();
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO return filtered list with correctly exceeded field
-        Map<LocalDate, Integer> mapOfSumByDate = mealList.stream()
-                .collect(Collectors.groupingBy(m-> m.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
-        List<UserMealWithExceed> listFilteredWithExceeded = mealList.stream()
-                .filter(m->TimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))
-                .map(m-> new UserMealWithExceed(m.getDateTime(), m.getDescription(), m.getCalories(), mapOfSumByDate.get(m.getDateTime().toLocalDate())>caloriesPerDay))
+        return mealList.stream()
+                .collect(Collectors.groupingBy(meal -> meal.getDateTime().toLocalDate()))
+                .entrySet().stream().map(entry -> {
+                    int sumOfCalories = entry.getValue().stream().mapToInt(UserMeal::getCalories).sum();
+                    return entry.getValue().stream().filter(meal ->
+                            TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
+                            .map(meal -> new UserMealWithExceed(meal.getDateTime(), meal.getDescription(),
+                                    meal.getCalories(),
+                                    sumOfCalories > caloriesPerDay))
+                            .collect(Collectors.toList());})
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        return listFilteredWithExceeded;
     }
 }
