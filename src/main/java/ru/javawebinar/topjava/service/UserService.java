@@ -4,7 +4,7 @@ package ru.javawebinar.topjava.service;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface UserService {
 
@@ -18,5 +18,5 @@ public interface UserService {
 
     void update(User user);
 
-    List<User> getAll();
+    Collection<User> getAll();
 }
