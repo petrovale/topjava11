@@ -7,13 +7,16 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.repository.mock.InMemoryUserRepositoryImpl.ADMIN_ID;
 import static ru.javawebinar.topjava.repository.mock.InMemoryUserRepositoryImpl.USER_ID;
+import static ru.javawebinar.topjava.util.DateTimeUtil.isBetween;
 
 public class InMemoryMealRepositoryImpl implements MealRepository {
     private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
@@ -53,7 +56,18 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals.values().stream()
+        return getAllSorted(meals.values().stream().collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<Meal> getBetween(int userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        Objects.requireNonNull(startDateTime);
+        Objects.requireNonNull(endDateTime);
+        return getAllSorted(repository.get(userId).values().stream().filter(m -> isBetween(m.getDateTime(), startDateTime, endDateTime)).collect(Collectors.toList()));
+    }
+
+    public List<Meal> getAllSorted(List<Meal> meals) {
+        return meals.stream()
                 .sorted((o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime())).collect(Collectors.toList());
     }
 }
