@@ -1,3 +1,7 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7f762ac9658e4b99ae17c79471597306)](https://www.codacy.com/app/petrovale/topjava11?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=petrovale/topjava11&amp;utm_campaign=Badge_Grade)
+[![Dependency Status](https://dependencyci.com/github/petrovale/topjava11/badge)](https://dependencyci.com/github/petrovale/topjava11)
+[![Build Status](https://travis-ci.org/petrovale/topjava11.svg?branch=master)](https://travis-ci.org/petrovale/topjava11)
+
 Java Enterprise Online Project 
 ===============================
 
